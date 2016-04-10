@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.VinylsMoreControl">
+   <children>
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="800.0" prefWidth="600.0">
+         <children>
+            <HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="130.0" prefWidth="600.0" styleClass="login" stylesheets="@../etc/style.css">
+               <children>
+                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="130.0" prefWidth="321.0" stylesheets="@../etc/style.css">
+                     <children>
+                        <ImageView fitHeight="73.0" fitWidth="261.0" layoutX="29.0" layoutY="29.0">
+                           <image>
+                              <Image url="@../etc/logo.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="130.0" prefWidth="439.0" HBox.hgrow="ALWAYS" />
+                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="130.0" prefWidth="232.0">
+                     <children>
+                        <Button fx:id="logOff_btn" layoutX="116.0" layoutY="48.0" mnemonicParsing="false" onAction="#logOffHandler" styleClass="dark-blue" text="Log Off" AnchorPane.rightAnchor="36.0" />
+                        <Button fx:id="goBack_btn" layoutX="14.0" layoutY="48.0" mnemonicParsing="false" onAction="#goBackHandler" styleClass="dark-blue" text="Go Back" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </HBox>
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="637.0" prefWidth="1000.0" stylesheets="@../etc/style.css" VBox.vgrow="ALWAYS">
+               <children>
+                  <TabPane prefHeight="632.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <tabs>
+                      <Tab text="Label">
+                        <content>
+                          <AnchorPane>
+                                 <children>
+                                    <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="603.0" prefWidth="1000.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="608.0" prefWidth="1000.0">
+                                             <children>
+                                                <TableView fx:id="labelsTable" layoutX="27.0" layoutY="50.0" prefHeight="415.0" prefWidth="946.0" tableMenuButtonVisible="true">
+                                                   <columns>
+                                                      <TableColumn fx:id="column_label_id" prefWidth="39.0" text="ID" />
+                                                      <TableColumn fx:id="column_label_label" minWidth="0.0" prefWidth="231.0" text="Label" />
+                                                      <TableColumn fx:id="column_label_founded" minWidth="0.0" prefWidth="206.0" text="Founded" />
+                                                      <TableColumn fx:id="column_label_city" minWidth="0.0" prefWidth="230.0" text="Headquarters" />
+                                                      <TableColumn fx:id="column_label_website" minWidth="0.0" prefWidth="227.0" text="Website" />
+                                                   </columns>
+                                                </TableView>
+                                                <TextField fx:id="tf_in_label_label" layoutX="415.0" layoutY="476.0" prefHeight="17.0" prefWidth="170.0" promptText="Label" />
+                                                <TextField fx:id="tf_in_label_location" layoutX="596.0" layoutY="476.0" prefHeight="25.0" prefWidth="170.0" promptText="Headquarters" />
+                                                <TextField fx:id="tf_in_label_founded" layoutX="415.0" layoutY="510.0" prefHeight="25.0" prefWidth="170.0" promptText="Founded" />
+                                                <TextField fx:id="tf_in_label_website" layoutX="596.0" layoutY="510.0" prefHeight="25.0" prefWidth="170.0" promptText="Website" />
+                                                <Button fx:id="label_insert_btn" layoutX="415.0" layoutY="542.0" mnemonicParsing="false" onAction="#insertLabelHandler" prefHeight="38.0" prefWidth="170.0" text="Insert" />
+                                                <TextField fx:id="tf_up_label_label" disable="true" layoutX="27.0" layoutY="476.0" prefHeight="25.0" prefWidth="170.0" promptText="Label" />
+                                                <TextField fx:id="tf_up_label_location" disable="true" layoutX="208.0" layoutY="476.0" prefHeight="25.0" prefWidth="170.0" promptText="Headquarters" />
+                                                <TextField fx:id="tf_up_label_founded" disable="true" layoutX="27.0" layoutY="510.0" prefHeight="25.0" prefWidth="170.0" promptText="Founded" />
+                                                <TextField fx:id="tf_up_label_website" disable="true" layoutX="208.0" layoutY="510.0" prefHeight="25.0" prefWidth="170.0" promptText="Website" />
+                                                <Button fx:id="label_edit_btn" layoutX="110.0" layoutY="543.0" mnemonicParsing="false" onAction="#editLabelHandler" prefHeight="35.0" prefWidth="87.0" text="Edit" />
+                                                <Button fx:id="label_cancel_btn" disable="true" layoutX="298.0" layoutY="543.0" mnemonicParsing="false" onAction="#cancelLabelHandler" prefHeight="35.0" prefWidth="80.0" text="Cancel" />
+                                                <Button fx:id="label_update_btn" disable="true" layoutX="208.0" layoutY="543.0" mnemonicParsing="false" onAction="#updateLabelHandler" prefHeight="35.0" prefWidth="85.0" text="Update" />
+                                                <Button fx:id="label_remove_btn" layoutX="596.0" layoutY="542.0" mnemonicParsing="false" onAction="#removeLabelHandler" prefHeight="38.0" prefWidth="170.0" text="Remove" />
+                                                <Separator layoutX="29.0" layoutY="31.0" prefHeight="17.0" prefWidth="942.0" />
+                                                <Button fx:id="label_refresh_btn" layoutX="797.0" layoutY="475.0" mnemonicParsing="false" onAction="#refreshLabelHandler" prefHeight="58.0" prefWidth="176.0" text="Refresh" />
+                                                <Separator layoutX="394.0" layoutY="476.0" orientation="VERTICAL" prefHeight="103.0" prefWidth="2.0" />
+                                                <Separator layoutX="781.0" layoutY="476.0" orientation="VERTICAL" prefHeight="103.0" prefWidth="2.0" />
+                                                <Label layoutX="29.0" layoutY="14.0" text="LABEL" />
+                                             </children>
+                                          </AnchorPane>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                      <Tab text="Genre">
+                        <content>
+                          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <HBox alignment="CENTER" layoutX="29.0" layoutY="14.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.leftAnchor="29.0" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="14.0">
+                                       <children>
+                                          <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" HBox.hgrow="NEVER">
+                                             <children>
+                                                <TableView fx:id="genresTable" layoutY="34.0" prefHeight="327.0" prefWidth="332.0" tableMenuButtonVisible="true">
+                                                   <columns>
+                                                      <TableColumn fx:id="column_genre_id" prefWidth="35.0" text="ID" />
+                                                      <TableColumn fx:id="column_genre_name" prefWidth="291.0" text="Genre" />
+                                                   </columns>
+                                                </TableView>
+                                                <TextField fx:id="tf_in_genre_name" layoutY="375.0" prefHeight="35.0" prefWidth="225.0" promptText="Genre" />
+                                                <TextField fx:id="tf_up_genre_name" disable="true" layoutY="472.0" prefHeight="35.0" prefWidth="225.0" promptText="Genre" />
+                                                <Button fx:id="genre_insert_btn" layoutX="118.0" layoutY="418.0" mnemonicParsing="false" onAction="#insertGenreHandler" prefHeight="35.0" prefWidth="107.0" text="Insert" />
+                                                <Button fx:id="genre_remove_btn" layoutY="418.0" mnemonicParsing="false" onAction="#removeGenreHandler" prefHeight="35.0" prefWidth="110.0" text="Remove" />
+                                                <Button fx:id="genre_edit_btn" layoutX="145.0" layoutY="517.0" mnemonicParsing="false" onAction="#editGenreHandler" prefHeight="35.0" prefWidth="80.0" text="Edit" />
+                                                <Button fx:id="genre_update_btn" disable="true" layoutY="517.0" mnemonicParsing="false" onAction="#updateGenreHandler" prefHeight="35.0" prefWidth="65.0" text="Update" />
+                                                <Button fx:id="genre_cancel_btn" disable="true" layoutX="74.0" layoutY="517.0" mnemonicParsing="false" onAction="#cancelGenreHandler" prefHeight="35.0" prefWidth="63.0" text="Cancel" />
+                                                <Separator layoutY="17.0" prefHeight="17.0" prefWidth="331.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="612.0" AnchorPane.topAnchor="17.0" />
+                                                <Label text="GENRE" />
+                                                <Button fx:id="genre_refresh_btn" layoutX="233.0" layoutY="375.0" mnemonicParsing="false" onAction="#refreshGenreHandler" prefHeight="35.0" prefWidth="99.0" text="Refresh" />
+                                                <PieChart fx:id="chartGenre" layoutX="357.0" layoutY="34.0" prefHeight="500.0" prefWidth="567.0" />
+                                                <Separator layoutX="357.0" layoutY="17.0" prefHeight="17.0" prefWidth="575.0" />
+                                                <Label layoutX="357.0" text="GENRE DIVERSITY IN STORE" />
+                                             </children>
+                                          </AnchorPane>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                        <Tab text="Artist">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <HBox alignment="CENTER" layoutX="29.0" layoutY="14.0" AnchorPane.leftAnchor="29.0" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="14.0">
+                                       <children>
+                                          <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" HBox.hgrow="NEVER">
+                                             <children>
+                                                <TableView fx:id="artistsTable" layoutX="4.0" layoutY="32.0" prefHeight="326.0" prefWidth="420.0" tableMenuButtonVisible="true">
+                                                   <columns>
+                                                      <TableColumn fx:id="column_artist_id" prefWidth="48.0" text="ID" />
+                                                      <TableColumn fx:id="column_artist_name" prefWidth="116.0" text="Artist" />
+                                                      <TableColumn fx:id="column_artist_addinfo" prefWidth="246.0" text="Additional Information" />
+                                                   </columns>
+                                                </TableView>
+                                                <TextField fx:id="tf_in_artist_name" layoutX="4.0" layoutY="418.0" prefHeight="35.0" prefWidth="150.0" promptText="Artist" />
+                                                <TextField fx:id="tf_in_artist_addinfo" layoutX="4.0" layoutY="372.0" prefHeight="35.0" prefWidth="150.0" promptText="Additional info" />
+                                                <Button fx:id="artist_insert_btn" layoutX="4.0" layoutY="465.0" mnemonicParsing="false" onAction="#insertArtistHandler" prefHeight="35.0" prefWidth="120.0" text="Insert" />
+                                                <Button fx:id="artist_remove_btn" layoutX="4.0" layoutY="507.0" mnemonicParsing="false" onAction="#removeArtistHandler" prefHeight="35.0" prefWidth="120.0" text="Remove" />
+                                                <TextField fx:id="tf_up_artist_name" disable="true" layoutX="165.0" layoutY="418.0" prefHeight="35.0" prefWidth="162.0" promptText="Artist" />
+                                                <TextField fx:id="tf_up_artist_addinfo" disable="true" layoutX="165.0" layoutY="372.0" prefHeight="35.0" prefWidth="162.0" promptText="Additional info" />
+                                                <Button fx:id="artist_edit_btn" layoutX="335.0" layoutY="465.0" mnemonicParsing="false" onAction="#editArtistHandler" prefHeight="35.0" prefWidth="87.0" text="Edit" />
+                                                <Button fx:id="artist_cancel_btn" disable="true" layoutX="165.0" layoutY="465.0" mnemonicParsing="false" onAction="#cancelArtistHandler" prefHeight="35.0" prefWidth="80.0" text="Cancel" />
+                                                <Button fx:id="artist_update_btn" disable="true" layoutX="253.0" layoutY="465.0" mnemonicParsing="false" onAction="#updateArtistHandler" prefHeight="35.0" prefWidth="73.0" text="Update" />
+                                                <Button fx:id="artist_refresh_btn" layoutX="335.0" layoutY="372.0" mnemonicParsing="false" onAction="#refreshArtistHandler" prefHeight="80.0" prefWidth="87.0" text="Refresh" />
+                                                <PieChart fx:id="chartArtist" layoutX="438.0" layoutY="32.0" prefHeight="525.0" prefWidth="511.0" />
+                                                <Separator layoutY="21.0" prefHeight="11.0" prefWidth="425.0" />
+                                                <Label text="ARTIST" />
+                                                <Separator layoutX="438.0" layoutY="22.0" prefHeight="7.0" prefWidth="508.0" />
+                                                <Label layoutX="438.0" layoutY="1.0" text="ARTISTS DIVERSITY " />
+                                             </children>
+                                          </AnchorPane>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="38.0" prefWidth="600.0" styleClass="darkFooter" stylesheets="@../etc/style.css" VBox.vgrow="NEVER">
+               <children>
+                  <Label layoutX="21.0" layoutY="10.0" text="Database systems project 2016 FIIT" textFill="#e4e4e4" />
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+   </children>
+</StackPane>
