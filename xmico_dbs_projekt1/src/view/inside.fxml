@@ -11,6 +11,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -225,20 +226,21 @@
                                     </Label>
                                     <Separator layoutX="23.0" layoutY="48.0" maxWidth="1.7976931348623157E308" prefHeight="3.0" prefWidth="705.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="272.0" />
                                     <Button fx:id="employee_refresh_btn" layoutX="740.0" layoutY="253.0" mnemonicParsing="false" onAction="#refreshEmployeeHandler" prefHeight="38.0" prefWidth="232.0" text="Refresh" AnchorPane.rightAnchor="28.0" />
-                                    <Button fx:id="employee_insert_btn" layoutX="740.0" layoutY="357.0" mnemonicParsing="false" onAction="#insertEmployeeHandler" prefHeight="38.0" prefWidth="232.0" text="Insert" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="357.0" />
-                                    <Button fx:id="employee_update_btn" layoutX="739.0" layoutY="402.0" mnemonicParsing="false" onAction="#updateEmployeeHandler" prefHeight="38.0" prefWidth="232.0" text="Update" AnchorPane.rightAnchor="29.0" />
+                                    <Button fx:id="employee_insert_btn" layoutX="741.0" layoutY="367.0" mnemonicParsing="false" onAction="#insertEmployeeHandler" prefHeight="38.0" prefWidth="232.0" text="Insert" AnchorPane.rightAnchor="27.0" AnchorPane.topAnchor="367.0" />
+                                    <Button fx:id="employee_update_btn" layoutX="740.0" layoutY="412.0" mnemonicParsing="false" onAction="#updateEmployeeHandler" prefHeight="38.0" prefWidth="232.0" text="Update" AnchorPane.rightAnchor="28.0" />
                                     <Separator prefWidth="200.0" />
                                     <Separator layoutX="740.0" layoutY="47.0" prefHeight="4.0" prefWidth="232.0" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="47.0" />
                                     <Label layoutX="747.0" layoutY="24.0" prefHeight="17.0" prefWidth="39.0" text="FILTER" AnchorPane.rightAnchor="214.0" AnchorPane.topAnchor="24.0" />
                                     <Button fx:id="employee_clear_btn" layoutX="740.0" layoutY="297.0" mnemonicParsing="false" onAction="#clearEmployeeFields" prefHeight="38.0" prefWidth="232.0" text="Clear" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="297.0" />
-                                    <Separator layoutX="740.0" layoutY="346.0" prefHeight="6.0" prefWidth="232.0" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="346.0" />
-                                    <Button fx:id="employee_delete_btn" layoutX="740.0" layoutY="447.0" mnemonicParsing="false" onAction="#deleteEmployeeHandler" prefHeight="38.0" prefWidth="232.0" text="Remove" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="447.0" />
+                                    <Separator layoutX="740.0" layoutY="349.0" prefHeight="6.0" prefWidth="232.0" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="349.0" />
+                                    <Button fx:id="employee_delete_btn" layoutX="741.0" layoutY="457.0" mnemonicParsing="false" onAction="#deleteEmployeeHandler" prefHeight="38.0" prefWidth="232.0" text="Remove" AnchorPane.rightAnchor="27.0" AnchorPane.topAnchor="457.0" />
                                     <TextField fx:id="tf_employee_name" layoutX="739.0" layoutY="61.0" prefHeight="30.0" prefWidth="232.0" promptText="Name" AnchorPane.rightAnchor="29.0" AnchorPane.topAnchor="61.0" />
                                     <TextField fx:id="tf_employee_surname" layoutX="739.0" layoutY="99.0" prefHeight="30.0" prefWidth="232.0" promptText="Surname" AnchorPane.rightAnchor="29.0" AnchorPane.topAnchor="99.0" />
                                     <TextField fx:id="tf_employee_post" layoutX="739.0" layoutY="211.0" prefHeight="30.0" prefWidth="232.0" promptText="Post" AnchorPane.rightAnchor="29.0" AnchorPane.topAnchor="211.0" />
                                     <TextField fx:id="tf_employee_city" layoutX="739.0" layoutY="135.0" prefHeight="30.0" prefWidth="232.0" promptText="Shop" AnchorPane.rightAnchor="29.0" AnchorPane.topAnchor="135.0" />
                                     <TextField fx:id="tf_employee_board" layoutX="739.0" layoutY="172.0" prefHeight="30.0" prefWidth="232.0" promptText="Joined" AnchorPane.rightAnchor="29.0" AnchorPane.topAnchor="172.0" />
-                                    <Button layoutX="739.0" layoutY="493.0" mnemonicParsing="false" onAction="#showEmployeeProfileHandler" prefHeight="38.0" prefWidth="232.0" text="Show profile" AnchorPane.rightAnchor="29.0" AnchorPane.topAnchor="493.0" />
+                                    <Button layoutX="740.0" layoutY="503.0" mnemonicParsing="false" onAction="#showEmployeeProfileHandler" prefHeight="38.0" prefWidth="232.0" text="Show profile" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="503.0" />
+                                    <Button layoutX="740.0" layoutY="549.0" mnemonicParsing="false" onAction="#showAccessesHandler" prefHeight="38.0" prefWidth="232.0" text="Show Accesses" />
                                  </children>
                               </AnchorPane>
                            </content>
@@ -307,6 +309,41 @@
                                  </children>
                               </AnchorPane>
                           </content>
+                        </Tab>
+                        <Tab text="Task Board">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <HBox alignment="CENTER" layoutX="29.0" layoutY="15.0" AnchorPane.leftAnchor="29.0" AnchorPane.rightAnchor="27.0" AnchorPane.topAnchor="15.0">
+                                       <children>
+                                          <Group>
+                                             <children>
+                                                <Label text="TASK BOARD" />
+                                                <Separator layoutY="24.0" prefHeight="0.0" prefWidth="936.0" />
+                                                <TableView fx:id="taskTable" layoutY="40.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="271.0" prefWidth="356.0" tableMenuButtonVisible="true">
+                                                   <columns>
+                                                      <TableColumn fx:id="column_task_name" prefWidth="126.0" text="Name" />
+                                                      <TableColumn fx:id="column_task_city" prefWidth="97.0" text="Shop" />
+                                                      <TableColumn fx:id="column_task_date" prefWidth="117.0" text="Date" />
+                                                   </columns>
+                                                </TableView>
+                                                <TextArea fx:id="message" layoutX="365.0" layoutY="40.0" prefHeight="271.0" prefWidth="571.0" promptText="Task here" />
+                                                <Button fx:id="task_insert_btn" layoutX="786.0" layoutY="320.0" mnemonicParsing="false" onAction="#insertTask" prefHeight="38.0" prefWidth="150.0" text="Insert" />
+                                                <Button fx:id="task_refresh_btn" layoutX="121.0" layoutY="320.0" mnemonicParsing="false" onAction="#refreshTaskTable" prefHeight="38.0" prefWidth="115.0" text="Refresh" />
+                                                <Button fx:id="task_remove_btn" layoutX="241.0" layoutY="320.0" mnemonicParsing="false" onAction="#removeTask" prefHeight="38.0" prefWidth="115.0" text="Remove" />
+                                                <Button fx:id="task_show_btn" layoutY="320.0" mnemonicParsing="false" onAction="#showTask" prefHeight="38.0" prefWidth="115.0" text="Show" />
+                                                <Button fx:id="task_clear_btn" layoutX="626.0" layoutY="320.0" mnemonicParsing="false" onAction="#clearTask" prefHeight="38.0" prefWidth="150.0" text="Clear" />
+                                                <Button fx:id="task_update_btn" layoutX="468.0" layoutY="320.0" mnemonicParsing="false" onAction="#updateTask" prefHeight="38.0" prefWidth="150.0" text="Update" />
+                                             </children>
+                                             <HBox.margin>
+                                                <Insets />
+                                             </HBox.margin>
+                                          </Group>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </AnchorPane>
+                           </content>
                         </Tab>
                      </tabs>
                   </TabPane>

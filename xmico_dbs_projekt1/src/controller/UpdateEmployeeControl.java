@@ -1,5 +1,6 @@
 package controller;
 
+import static controller.LoginController.LOGGED_EMP_ID;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
@@ -20,9 +21,12 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Label;
+import redis.clients.jedis.Jedis;
 
 /**
  *Method for update worker
@@ -36,6 +40,9 @@ public class UpdateEmployeeControl implements Initializable {
     private PreparedStatement preparedStatement = null;
     Connector connector = new Connector();
     
+    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd_HH:mm");
+    private  Jedis jedis = null;
+    private String logList;
    
     private String name;
     private String surname;
@@ -127,6 +134,16 @@ public class UpdateEmployeeControl implements Initializable {
     
     @FXML
     void logOffHandler(ActionEvent event) {
+        
+        if(jedis==null){
+            connector.connectToRedisDbs();
+            jedis=connector.getRedisConnect();
+        }
+        
+        java.util.Date date = new java.util.Date();  
+        logList=jedis.hget("user:"+LOGGED_EMP_ID, "log");
+        jedis.lpush(logList, dateFormat.format(date));
+        
         ScreenNavigator.loadScreen(ScreenNavigator.LOGIN);
     }
     
@@ -237,8 +254,13 @@ public class UpdateEmployeeControl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        
         connector.connectToDbs();
         connect=connector.getConnect();
+        
+        connector.connectToRedisDbs();
+        jedis=connector.getRedisConnect();
+        
         try {
             fillPostComboBox();
             fillCityComboBox();

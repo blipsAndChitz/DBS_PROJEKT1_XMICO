@@ -1,5 +1,9 @@
 package controller;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigInteger;
@@ -9,6 +13,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +30,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Transaction;
 
 public class LoginController implements Initializable {
 
@@ -32,6 +41,10 @@ public class LoginController implements Initializable {
     private PreparedStatement preparedStatement = null;
     Connector connector = new Connector();
     
+    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd_HH:mm");
+    private  Jedis jedis = null;
+    private String logList;
+    
     private String username;
     private BigInteger password;
     
@@ -39,17 +52,10 @@ public class LoginController implements Initializable {
     public static String LOGGED_SHOP_NAME;
     public static int LOGGED_EMP_ID;
     
-    @FXML
-    private Button logIn_btn;
-    
-    @FXML
-    private TextField username_tf;
-        
-    @FXML
-    private PasswordField password_pf;
-    
-    @FXML
-    private Label info_lb;
+    @FXML private Button logIn_btn;
+    @FXML private TextField username_tf;
+    @FXML private PasswordField password_pf;
+    @FXML private Label info_lb;
     
     /**
      * Handler of login button
@@ -81,7 +87,28 @@ public class LoginController implements Initializable {
            connect.commit();
            
           if(passFromDbs.equals(password.toString()) && !passFromDbs.equals("")){
-                ScreenNavigator.loadScreen(ScreenNavigator.INSIDE);
+               
+                //redis 
+                Date date = new Date();              
+                //System.out.println(dateFormat.format(date));
+              
+                
+                
+                logList=jedis.hget("user:"+LOGGED_EMP_ID, "log");
+                
+                
+                if(jedis.llen(logList)%2==0){
+                    //jedis=connector.getRedisConnect();
+                    //Transaction t = jedis.multi();
+                    jedis.lpush(logList, dateFormat.format(date));
+                    //t.exec();
+                    //jedis=connector.getRedisConnect();
+                    ScreenNavigator.loadScreen(ScreenNavigator.INSIDE);
+                }                 
+                else{
+                    info_lb.setText("You are already logged in!!");
+                    info_lb.setStyle("-fx-text-fill: red");   
+                }
            }
            else{
                 info_lb.setText("Wrong password or login!!");
@@ -116,10 +143,42 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("Program started..."); 
+        
+        System.out.println("Program started...");         
+     
+        //handle erorr
+        
+           
+        
         try {
+                    
             connector.connectToDbs();
             connect=connector.getConnect();
+            
+            //redis
+            connector.connectToRedisDbs();
+            jedis=connector.getRedisConnect();
+           
+            
+            String erorrLog=readFile("sessionerorr.txt");
+            System.out.println(erorrLog);
+           
+            
+            if(erorrLog.length()>0){
+            
+            String erorrUser = erorrLog.substring(0,8);
+            System.out.println(erorrUser);            
+            
+            String erorrDate = erorrLog.substring(9,25);
+            System.out.println(erorrDate); 
+            
+            if(jedis.llen(erorrUser)%2==1)
+                jedis.lpush(erorrUser, erorrDate);
+            
+            clearTheFile();   
+            }
+                          
+            
         } catch (Exception ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -166,7 +225,34 @@ public class LoginController implements Initializable {
        
         return password;
     }
-
+    
+    public void clearTheFile() throws IOException {
+        FileWriter fwOb = new FileWriter("sessionerorr.txt", false); 
+        PrintWriter pwOb = new PrintWriter(fwOb, false);
+        pwOb.flush();
+        pwOb.close();
+        fwOb.close();
+    }
  
+    private String readFile(String fileName) throws IOException {
+    
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append("\n");
+                line = br.readLine();
+            }
+            return sb.toString();
+        } finally {
+            br.close();
+        }
+}
+    
+    
+    
        
 }
