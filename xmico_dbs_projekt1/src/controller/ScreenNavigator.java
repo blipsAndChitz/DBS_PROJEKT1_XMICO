@@ -12,7 +12,8 @@ public class ScreenNavigator {
     public static final String UPDATE_EMPLOYEE = "/view/update_employee.fxml";
     public static final String VINYLS_MORE = "/view/vinyls_more.fxml";
     public static final String STATISTICS_MORE = "/view/statistics_more.fxml";
-        
+    public static final String ACCESSES = "/view/accesses.fxml";
+    
     private static MainController mainController;
 
     public static void setMainController(MainController mainController) {

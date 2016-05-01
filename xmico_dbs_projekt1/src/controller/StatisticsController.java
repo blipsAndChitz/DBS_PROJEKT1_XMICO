@@ -1,5 +1,6 @@
 package controller;
 
+import static controller.LoginController.LOGGED_EMP_ID;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -7,7 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
 import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
@@ -30,6 +33,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.TimeStats;
+import redis.clients.jedis.Jedis;
 
 /**
  * Controller class for screen "More Statistics"
@@ -44,6 +48,10 @@ public class StatisticsController implements Initializable {
     private PreparedStatement preparedStatement = null;
     Connector connector = new Connector();  
     
+    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd_HH:mm");
+    private  Jedis jedis = null;
+    private String logList;
+    
     @FXML
     private Button logOff_btn;
     
@@ -52,6 +60,16 @@ public class StatisticsController implements Initializable {
     
     @FXML
     void logOffHandler(ActionEvent event) {
+        
+        if(jedis==null){
+            connector.connectToRedisDbs();
+            jedis=connector.getRedisConnect();
+        }
+        
+        java.util.Date date = new java.util.Date();  
+        logList=jedis.hget("user:"+LOGGED_EMP_ID, "log");
+        jedis.lpush(logList, dateFormat.format(date));
+        
         ScreenNavigator.loadScreen(ScreenNavigator.LOGIN);
     }
     
@@ -403,7 +421,11 @@ public class StatisticsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         connector.connectToDbs(); //connect
-        connect=connector.getConnect();        
+        connect=connector.getConnect();  
+        
+        connector.connectToRedisDbs();
+        jedis=connector.getRedisConnect();
+        
         try {
             //icome by employee
             setIncomeByEmployeeData();

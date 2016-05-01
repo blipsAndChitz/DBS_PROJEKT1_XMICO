@@ -1,6 +1,7 @@
 package controller;
 
-
+import static controller.LoginController.LOGGED_EMP_ID;
+import static controller.LoginController.LOGGED_SHOP_NAME;
 import java.io.IOException;
 import static java.lang.Integer.parseInt;
 import java.net.URL;
@@ -29,11 +30,13 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import redis.clients.jedis.Jedis;
 
 public class InsideController implements Initializable {
 
@@ -43,11 +46,25 @@ public class InsideController implements Initializable {
     private PreparedStatement preparedStatement = null;
     Connector connector = new Connector();  
     
+    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd_HH:mm");
+    private  Jedis jedis = null;
+    private String logList;
+    
     @FXML
     private Button logOff_btn;
         
     @FXML
     void logOffHandler(ActionEvent event) {
+        
+        if(jedis==null){
+            connector.connectToRedisDbs();
+            jedis=connector.getRedisConnect();
+        }        
+        
+        java.util.Date date = new java.util.Date();  
+        logList=jedis.hget("user:"+LOGGED_EMP_ID, "log");
+        jedis.lpush(logList, dateFormat.format(date));
+        
         ScreenNavigator.loadScreen(ScreenNavigator.LOGIN);
     }  
        
@@ -365,6 +382,11 @@ public class InsideController implements Initializable {
         }
     } 
   
+    @FXML
+    private void showAccessesHandler(ActionEvent event){
+        ScreenNavigator.loadScreen(ScreenNavigator.ACCESSES);
+    }    
+    
     //OTHER TAB SHOPS___________________________________________________________   
     
     //buttons
@@ -2281,6 +2303,7 @@ public class InsideController implements Initializable {
         column_saleshistory_name.setCellValueFactory(new PropertyValueFactory<>("column_saleshistory_name"));
         column_saleshistory_surname.setCellValueFactory(new PropertyValueFactory<>("column_saleshistory_surname"));    
         soldHistoryTable.setItems(sold);
+                  
     
     } 
     
@@ -2368,6 +2391,156 @@ public class InsideController implements Initializable {
         ScreenNavigator.loadScreen(ScreenNavigator.STATISTICS_MORE);
     }    
     
+    // TASK BOARD ______________________________________________________________
+    
+    private int idecko=1;
+    
+    @FXML private Button task_insert_btn;
+    @FXML private Button task_remove_btn;
+    @FXML private Button task_refresh_btn;
+    @FXML private Button task_show_btn;
+    @FXML private Button task_clear_btn;
+    @FXML private Button task_update_btn;     
+    @FXML private TableView<Task> taskTable;        
+    @FXML private TableColumn<Task, String> column_task_city;    
+    @FXML private TableColumn<Task, String> column_task_name;
+    @FXML private TableColumn<Task, String> column_task_date;
+    @FXML private TextArea message;
+    
+    ObservableList<Task> task = FXCollections.observableArrayList();
+    ObservableList<Task> taskToRemove;
+    ObservableList<Task> newTask;
+    
+    @FXML
+    private void refreshTaskTable(ActionEvent event) throws IOException {        
+        refreshTaskBoard();
+    }
+     
+    private void refreshTaskBoard(){
+    
+        task.clear();
+        
+        if(jedis==null){
+            connector.connectToRedisDbs();
+            jedis=connector.getRedisConnect();
+        }
+        
+        idecko=1;
+        while(jedis.hexists("task:"+idecko, "task")){
+            task.add(new Task(jedis.hget("task:"+idecko,"user"),
+                    jedis.hget("task:"+idecko,"shop"),
+                    jedis.hget("task:"+idecko,"date"),
+                    jedis.hget("task:"+idecko,"task"),
+                    "task:"+idecko));            
+            idecko++;
+        }
+        
+       column_task_city.setCellValueFactory(new PropertyValueFactory<>("column_task_city"));
+       column_task_name.setCellValueFactory(new PropertyValueFactory<>("column_task_name"));
+       column_task_date.setCellValueFactory(new PropertyValueFactory<>("column_task_date"));
+ 
+       taskTable.setItems(task);    
+        
+    }
+    
+    @FXML
+    private void removeTask(ActionEvent event) throws IOException {        
+        taskToRemove = taskTable.getSelectionModel().getSelectedItems();
+       
+        if(jedis==null){
+            connector.connectToRedisDbs();
+            jedis=connector.getRedisConnect();
+        }
+        
+        System.out.println(taskToRemove.get(0).getHashName());
+        
+        jedis.hdel(taskToRemove.get(0).getHashName(),
+                "user",
+                "date",
+                "task",
+                "shop");
+
+        refreshTaskBoard();       
+    }
+    
+    @FXML
+    private void showTask(ActionEvent event) throws IOException {        
+        
+        taskToRemove = taskTable.getSelectionModel().getSelectedItems();
+        message.setText(taskToRemove.get(0).getTask());
+        task_insert_btn.setDisable(true);
+               
+    }
+    
+    @FXML
+    private void clearTask(ActionEvent event) throws IOException {        
+        
+        message.clear();
+        task_insert_btn.setDisable(false);
+               
+    }
+    
+    @FXML
+    private void updateTask(ActionEvent event) throws IOException {        
+        
+        String task;
+        task=message.getParagraphs().toString();
+        task=task.substring(1,task.length()-1);
+        
+        if(jedis==null){
+            connector.connectToRedisDbs();
+            jedis=connector.getRedisConnect();
+        }
+        
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("task",task);
+        jedis.hmset(taskToRemove.get(0).getHashName(),map); 
+        message.clear();
+        task_insert_btn.setDisable(false);
+        refreshTaskBoard();
+               
+    }    
+    
+    @FXML
+    private void insertTask(ActionEvent event) throws IOException, SQLException {        
+        
+        String name="";
+        String surname="";
+        String task="";
+        task=message.getParagraphs().toString();
+        task=task.substring(1,task.length()-1);
+   
+        
+       connect.setAutoCommit(false);     
+        String query = "SELECT employee.name, employee.surname FROM `employee` WHERE employee_id='"+LOGGED_EMP_ID+"'";
+        statement = connect.createStatement();
+        resultSet = statement.executeQuery(query);  
+        while(resultSet.next()){
+            name=resultSet.getString("name");
+            surname=resultSet.getString("surname");
+         }
+        resultSet.close();
+        connect.commit();
+        
+        if(jedis==null){
+            connector.connectToRedisDbs();
+            jedis=connector.getRedisConnect();
+        }
+               
+        java.util.Date date = new java.util.Date();  
+   
+        int i=idecko++;
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("user",name+" "+surname);
+        map.put("shop",LOGGED_SHOP_NAME);
+        map.put("date",dateFormat.format(date));
+        map.put("task",task);
+        jedis.hmset("task:"+i,map);
+        refreshTaskBoard();
+        message.clear();
+    }
+    
+    
     /**
      * Alert if you do something wrong
      */
@@ -2399,7 +2572,10 @@ public class InsideController implements Initializable {
             System.out.println("Logged in..");
             connector.connectToDbs();
             connect=connector.getConnect();
-       
+            
+            connector.connectToRedisDbs();
+            jedis=connector.getRedisConnect();
+            
             //catalogue
             refreshCatalogueTable("%","%","%","%","%",10000,10000.0);
             //history
@@ -2416,6 +2592,8 @@ public class InsideController implements Initializable {
             //others
             refreshShopTable();
             refreshPostTable();
+            //task
+            refreshTaskBoard();
             
         } catch (IOException ex) {
             Logger.getLogger(InsideController.class.getName()).log(Level.SEVERE, null, ex);

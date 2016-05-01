@@ -1,11 +1,14 @@
 package controller;
 
+import static controller.LoginController.LOGGED_EMP_ID;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +27,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import model.Artist;
 import model.Genre;
 import model.Label;
+import redis.clients.jedis.Jedis;
 
 
 public class VinylsMoreControl implements Initializable {
@@ -32,13 +36,27 @@ public class VinylsMoreControl implements Initializable {
     private Statement statement = null;
     private ResultSet resultSet = null;
     private PreparedStatement preparedStatement = null;
-    Connector connector = new Connector();  
+    Connector connector = new Connector();      
+    
+    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd_HH:mm");
+    private  Jedis jedis = null;
+    private String logList;
     
     @FXML private Button logOff_btn;    
     @FXML private Button goBack_btn;
     
     @FXML
     void logOffHandler(ActionEvent event) {
+        
+        if(jedis==null){
+            connector.connectToRedisDbs();
+            jedis=connector.getRedisConnect();
+        }
+        
+        java.util.Date date = new java.util.Date();  
+        logList=jedis.hget("user:"+LOGGED_EMP_ID, "log");
+        jedis.lpush(logList, dateFormat.format(date));
+        
         ScreenNavigator.loadScreen(ScreenNavigator.LOGIN);
     }
     
@@ -941,9 +959,13 @@ public class VinylsMoreControl implements Initializable {
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        
         connector.connectToDbs();
         connect=connector.getConnect();
        
+        connector.connectToRedisDbs();
+        jedis=connector.getRedisConnect();
+        
         //labels
         refreshLabelTable();
         

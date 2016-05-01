@@ -5,9 +5,17 @@
  */
 package controller;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import redis.clients.jedis.Jedis;
 
 /**
  * Provides connection to the DB
@@ -16,6 +24,7 @@ import java.sql.SQLException;
 public class Connector {
         
     private Connection connect = null;   
+    private  Jedis jedis = null;
     
      /**
      * This method connects to DB
@@ -35,7 +44,26 @@ public class Connector {
         }
     }
 
+    public void connectToRedisDbs(){      
+      
+        try{
+            jedis = new Jedis("localhost");
+            System.out.println("Connection to server sucessfully");
+            jedis.select(1);
+            System.out.println("Server is running: "+jedis.ping());  
+        }
+        catch(Exception ex){
+            System.out.println("Jedis is down");
+            System.exit(1);
+        }
+    }
+    
     public Connection getConnect() {
         return connect;
-    }    
+    }
+
+    public Jedis getRedisConnect() {
+        return jedis;
+    } 
+    
 }

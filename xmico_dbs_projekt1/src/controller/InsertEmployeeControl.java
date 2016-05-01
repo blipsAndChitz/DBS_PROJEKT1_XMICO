@@ -1,5 +1,6 @@
 package controller;
 
+import static controller.LoginController.LOGGED_EMP_ID;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
@@ -18,9 +19,14 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Label;
+import redis.clients.jedis.Jedis;
 
 /**
  *
@@ -34,6 +40,10 @@ public class InsertEmployeeControl implements Initializable {
     private PreparedStatement preparedStatement = null;
     Connector connector = new Connector(); 
    
+    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd_HH:mm");
+    private  Jedis jedis = null;
+    private String logList;
+    
     private String name;
     private String surname;
     private String login;
@@ -115,6 +125,18 @@ public class InsertEmployeeControl implements Initializable {
     
     @FXML
     void logOffHandler(ActionEvent event) {
+        
+        if(jedis==null){
+            connector.connectToRedisDbs();
+            jedis=connector.getRedisConnect();
+        }
+        
+        java.util.Date date = new java.util.Date();              
+        //System.out.println(dateFormat.format(date));
+              
+        logList=jedis.hget("user:"+LOGGED_EMP_ID, "log");
+        jedis.lpush(logList, dateFormat.format(date));
+        
         ScreenNavigator.loadScreen(ScreenNavigator.LOGIN);
     }
     
@@ -220,7 +242,29 @@ public class InsertEmployeeControl implements Initializable {
                 preparedStatement.setString(8, age);
                 preparedStatement.setString(9, addinfo);
                 preparedStatement.executeUpdate();
+                
+                int id=0;
+                
+                query = "SELECT * FROM `employee` WHERE 1 ORDER BY employee_id DESC LIMIT 1";
+                statement = connect.createStatement();
+                resultSet = statement.executeQuery(query);
+                while(resultSet.next()){
+                   id=resultSet.getInt("employee_id");
+                }                
+                
                 connect.commit();
+                
+                //redis                
+                Map<String, String> hash = new HashMap<String, String>();
+                hash.put("name",name);
+                hash.put("surname",surname);
+                hash.put("shop",city);
+                hash.put("log", "access:"+id);               
+                
+                if(id>0){                
+                    jedis.hmset("user:"+id, hash);
+                }
+                
                 ScreenNavigator.loadScreen(ScreenNavigator.INSIDE);
             }                     
        }
@@ -252,8 +296,13 @@ public class InsertEmployeeControl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        
         connector.connectToDbs();
         connect=connector.getConnect();
+        
+        connector.connectToRedisDbs();
+        jedis=connector.getRedisConnect();
+        
         try {
             fillPostComboBox();
             fillCityComboBox();
